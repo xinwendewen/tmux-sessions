@@ -5,7 +5,7 @@ set -u
 set -e
 CURRENT_DIR="$(cd "$(dirname $BASH_SOURCE[0])" && pwd)"
 
-source ${CURRENT_DIR}/tmux_functions.sh
+source ${CURRENT_DIR}/tmux-functions.sh
 
 echo "setting up metrics board tmux session"
 

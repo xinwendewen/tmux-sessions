@@ -20,6 +20,13 @@ create_window() {
 	echo "window ${window_name} created"
 }
 
+recreate_window() {
+    local target_window=$1
+    local window_name=$2
+    kill_window $target_window
+    create_window $target_window $window_name
+}
+
 rename_window() {
 	echo "rename window $1:$2 to $3"
 	tmux rename-window -t "=$1:$2" $3
@@ -29,6 +36,12 @@ send_command() {
     local target_window=$1
     local cmd=$2
 	tmux send-keys -t "${target_window}" "${cmd}" C-m
+}
+
+go_dir() {
+    local target_window=$1
+    local dir=$2
+    send_command $target_window "cd $dir"
 }
 
 split_vertical() {

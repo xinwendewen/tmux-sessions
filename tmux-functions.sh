@@ -16,7 +16,12 @@ kill_window() {
 create_window() {
     local target_window=$1
     local window_name=$2
-	tmux new-window -d -t "${target_window}" -n "${window_name}"
+    if [[ $# = 3 ]]; then
+        local dir="$3"
+        tmux new-window -d -t "${target_window}" -n "${window_name}" -c "${dir}"
+    else
+        tmux new-window -d -t "${target_window}" -n "${window_name}"
+    fi
 	echo "window ${window_name} created"
 }
 
@@ -42,6 +47,13 @@ go_dir() {
     local target_window=$1
     local dir=$2
     send_command $target_window "cd $dir"
+}
+
+export_env() {
+    local target_window=$1
+    local name=$2
+    local value=$3
+    send_command $target_window "export $2 $3"
 }
 
 split_vertical() {

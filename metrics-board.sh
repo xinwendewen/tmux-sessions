@@ -13,27 +13,31 @@ echo "setting up metrics board tmux session"
 readonly SESSION="metrics-board"
 
 setup_adb_metrics_window() {
-    kill_window "=${SESSION}:3"
-    create_window "=${SESSION}:3" "adb"
+    local target_window="=${SESSION}:2"
+    kill_window "${target_window}"
+    create_window "${target_window}" "adb"
     if [[ -n ${HOST} && -n ${PORT} ]]; then
-        send_command "=${SESSION}:3.1" "watch adb -H ${HOST} -P ${PORT} devices" C-m
+        send_command "${target_window}.1" "watch adb -H ${HOST} -P ${PORT} devices" C-m
     else
-        send_command "=${SESSION}:3.1" "watch adb devices" C-m
+        send_command "${target_window}.1" "watch adb devices" C-m
     fi
 }
 
 setup_sys_metrics_window() {
-    kill_window "=${SESSION}:2"
-    create_window "=${SESSION}:2" "sys"
-    send_command "=${SESSION}:2" "top"
-    split_vertical "=${SESSION}:2"
-    send_command "=${SESSION}:2.2" "watch -n 10 df -h" C-m
+    local target_window="=${SESSION}:1"
+    kill_window "${target_window}"
+    create_window "${target_window}" "sys"
+    send_command "${target_window}" "top"
+    split_vertical "${target_window}"
+    send_command "${target_window}.2" "watch -n 10 df -h" C-m
 }
 
 main() {
     create_session "${SESSION}"
+    create_window "${SESSION}:0" "dummy"
     setup_sys_metrics_window
     setup_adb_metrics_window
+    kill_window "${SESSION}:0"
 }
 
 main
